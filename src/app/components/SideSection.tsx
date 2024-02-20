@@ -27,7 +27,7 @@ export default function SideSection({
 
   return (
     <div className="pt-5 flex flex-col w-20 gap-5  bg-[#191817]  text-[#C6A15A]">
-      <div className="flex h-12 w-full    justify-center  items-center">
+      <div className="flex h-12 pt-32 w-full    justify-center  items-center">
         <button onClick={(e) => selectionHandler({ ...e }, "Text")}>
           <Image
             src={TextIcon}

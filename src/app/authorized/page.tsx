@@ -21,8 +21,9 @@ export default function Authorized() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [img]);
 
-  const imageOnClickHandler = () => {
-    if (preview) {
+  const imageOnClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (preview && currentAction === "Text") {
+      console.log(e.clientX, e.clientY);
     }
   };
 
@@ -43,6 +44,7 @@ export default function Authorized() {
                 width={400}
                 height={400}
                 className="h-full"
+                style={{ cursor: currentAction || "auto" }}
               />
             </button>
           )}
