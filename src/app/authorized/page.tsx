@@ -4,10 +4,25 @@ import SideSection from "../components/SideSection";
 import HeaderSection from "../components/HeaderSection";
 import { useEffect, useState } from "react";
 type ImageActionType = "Text" | null;
+type TextBoxArrType = Array<{
+  x: number;
+  y: number;
+  text?: string;
+  key: string;
+  width: number;
+  height: number;
+  bold: boolean;
+  italics: boolean;
+  underline: boolean;
+  fontSize: number;
+  isFocused: boolean;
+}>;
 export default function Authorized() {
   const [img, setImg] = useState<Blob>();
   const [currentAction, setCurrentAction] = useState<ImageActionType>(null);
   const [preview, setPreview] = useState<string>();
+  const [TextBoxArr, setTextBoxArr] = useState<TextBoxArrType>([]);
+
   useEffect(() => {
     if (!img) {
       setPreview(undefined);
@@ -21,9 +36,34 @@ export default function Authorized() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [img]);
 
+  function onChange(key: string, text?: string) {
+    const index = TextBoxArr.findIndex((i) => i.key === key);
+    if (index === -1) return;
+
+    setTextBoxArr((prev) => {
+      const arr = [...prev];
+      arr[index] = { ...arr[index], text };
+      return arr;
+    });
+  }
+
   const imageOnClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (preview && currentAction === "Text") {
-      console.log(e.clientX, e.clientY);
+      setTextBoxArr((prev) => [
+        ...prev,
+        {
+          x: e.clientX,
+          y: e.clientY,
+          key: `T+${Math.floor(Math.random() * 9999)} `,
+          height: 60,
+          width: 250,
+          bold: false,
+          italics: false,
+          underline: false,
+          fontSize: 14,
+          isFocused: false,
+        },
+      ]);
     }
   };
 
@@ -46,6 +86,124 @@ export default function Authorized() {
                 className="h-full"
                 style={{ cursor: currentAction || "auto" }}
               />
+              {TextBoxArr.map((textBox) => {
+                const ChangeFormattingHandler = (
+                  name: "bold" | "italics" | "underline" | "isFocused",
+                  key: string,
+                  val?: boolean
+                ) => {
+                  const index = TextBoxArr.findIndex((i) => i.key === key);
+                  if (index === -1) return;
+
+                  setTextBoxArr((prev) => {
+                    const arr = [...prev];
+                    arr[index] = {
+                      ...arr[index],
+                      [name]: val ? val : !arr[index][name],
+                    };
+                    return arr;
+                  });
+                };
+                return (
+                  <div
+                    className={`p-5 z-30 bg-transparent   absolute  `}
+                    key={textBox.key}
+                    style={{
+                      left: textBox.x / 2,
+                      top: textBox.y,
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div
+                      onFocus={() =>
+                        ChangeFormattingHandler("isFocused", textBox.key, true)
+                      }
+                      onBlur={(e) => {
+                        setTimeout(() => {
+                          ChangeFormattingHandler(
+                            "isFocused",
+                            textBox.key,
+                            false
+                          );
+                        }, 1000);
+                      }}
+                    >
+                      <input
+                        name={textBox.key}
+                        style={{
+                          width: textBox.width,
+                          height: textBox.height,
+                          fontSize: textBox.fontSize,
+                        }}
+                        className={`pl-2 bg-inherit border-solid border-2 text-black  border-black ${
+                          textBox.bold && "font-bold"
+                        } ${textBox.italics && "italic"} ${
+                          textBox.underline && "underline"
+                        }`}
+                        value={textBox.text}
+                        onChange={(e) => onChange(textBox.key, e.target.value)}
+                      />
+                      {textBox.isFocused && (
+                        <div className="flex flex-1 h-8 justify-center items-center gap-5 bg-[#141414]">
+                          <button
+                            onClick={(e) =>
+                              ChangeFormattingHandler("bold", textBox.key)
+                            }
+                            data-name="bold"
+                            className="p-2 font-bold"
+                          >
+                            B
+                          </button>
+                          <button
+                            className="p-2 italic"
+                            onClick={(e) =>
+                              ChangeFormattingHandler("italics", textBox.key)
+                            }
+                            data-name="italics"
+                          >
+                            I
+                          </button>
+                          <button
+                            className="p-2 underline"
+                            onClick={(e) =>
+                              ChangeFormattingHandler("underline", textBox.key)
+                            }
+                            data-name="underline"
+                          >
+                            U
+                          </button>
+
+                          <select className="bg-inherit">
+                            <option selected={textBox.fontSize === 8}>8</option>
+                            <option selected={textBox.fontSize === 10}>
+                              10
+                            </option>
+                            <option selected={textBox.fontSize === 11}>
+                              11
+                            </option>
+                            <option selected={textBox.fontSize === 12}>
+                              12
+                            </option>
+                            <option selected={textBox.fontSize === 14}>
+                              14
+                            </option>
+                            <option selected={textBox.fontSize === 16}>
+                              16
+                            </option>
+                            <option selected={textBox.fontSize === 18}>
+                              18
+                            </option>
+                            <option selected={textBox.fontSize === 20}>
+                              {" "}
+                              20
+                            </option>
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </button>
           )}
         </div>
