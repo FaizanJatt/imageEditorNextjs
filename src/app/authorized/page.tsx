@@ -1,8 +1,7 @@
 "use client"; // This is a client component
-import Image from "next/image";
 import SideSection from "../components/SideSection";
 import HeaderSection from "../components/HeaderSection";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 type ImageActionType = "Text" | "Move" | null;
 type TextBoxArrType = Array<{
   x: number;
@@ -20,6 +19,8 @@ type TextBoxArrType = Array<{
 
 const fontSizeArr = [8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26];
 export default function Authorized() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
   const [img, setImg] = useState<Blob>();
   const [currentAction, setCurrentAction] = useState<ImageActionType>(null);
   const [preview, setPreview] = useState<string>();
@@ -37,6 +38,31 @@ export default function Authorized() {
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
   }, [img]);
+
+  useEffect(() => {
+    applyFx();
+  }, [img, preview]);
+
+  const applyFx = () => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
+    const image = new Image();
+    image.src = preview;
+
+    image.onload = () => {
+      if (canvas && context) {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.save();
+
+        // context.translate(translateX, translateY);
+        // context.scale(zoom, zoom);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        context.restore();
+      }
+    };
+  };
 
   function onChange(key: string, text?: string) {
     const index = TextBoxArr.findIndex((i) => i.key === key);
@@ -78,7 +104,10 @@ export default function Authorized() {
   };
 
   return (
-    <main className="flex min-h-screen flex-row  ">
+    <main
+      className="flex min-h-screen flex-row  "
+      style={{ cursor: currentAction || "auto" }}
+    >
       <SideSection
         currentAction={currentAction}
         setCurrentAction={setCurrentAction}
@@ -105,7 +134,7 @@ export default function Authorized() {
                 }
               }}
             >
-              <Image
+              {/* <Image
                 src={preview}
                 alt="user Uploaded Img"
                 width={50}
@@ -115,7 +144,17 @@ export default function Authorized() {
                   width: "auto",
                   height: "auto",
                 }}
+              /> */}
+              <canvas
+                className=" "
+                ref={canvasRef}
+                style={{
+                  cursor: currentAction || "auto",
+                  width: "auto",
+                  height: "auto",
+                }}
               />
+
               {TextBoxArr.map((textBox) => {
                 const ChangeFormattingHandler = (
                   name:
@@ -184,10 +223,12 @@ export default function Authorized() {
                           height: textBox.height,
                           fontSize: textBox.fontSize,
                         }}
-                        className={`pl-2 bg-inherit border-solid border-2 text-black  border-black ${
+                        className={`pl-2 bg-inherit  text-black  border-black ${
                           textBox.bold && "font-bold"
                         } ${textBox.italics && "italic"} ${
                           textBox.underline && "underline"
+                        } ${
+                          currentAction === "Move" && "border-solid border-2"
                         }`}
                         value={textBox.text}
                         onClick={() => setCurrentMoveTargetHandler(textBox.key)}

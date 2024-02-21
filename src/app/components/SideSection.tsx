@@ -37,7 +37,20 @@ export default function SideSection({
             className={`p-1 rounded-3xl ${isSelected("Text")}`}
           />
         </button>
-        <div className="">Save</div>
+        <div
+          onClick={() => setCurrentAction("Move")}
+          className={`font-mono text-xs h-12  p-1 rounded-3xl ${isSelected(
+            "Move"
+          )}`}
+        >
+          Drag Box
+        </div>
+        <div
+          onClick={() => alert("not yet implemented")}
+          className="font-mono text-xs"
+        >
+          Save
+        </div>
       </div>
     </div>
   );
