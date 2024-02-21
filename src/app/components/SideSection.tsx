@@ -2,7 +2,7 @@ import Image from "next/image";
 import TextIcon from "../../assets/Text.svg";
 import { Dispatch, SetStateAction } from "react";
 
-type ImageActionType = "Text" | null;
+type ImageActionType = "Text" | "Move" | null;
 
 interface SideSectionProps {
   setCurrentAction: Dispatch<SetStateAction<ImageActionType>>;
