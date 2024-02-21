@@ -27,7 +27,7 @@ export default function SideSection({
 
   return (
     <div className="pt-5 flex flex-col w-20 gap-5  bg-[#191817]  text-[#C6A15A]">
-      <div className="flex h-12 pt-32 w-full    justify-center  items-center">
+      <div className="flex h-12 pt-32 w-full flex-col  gap-12   justify-center  items-center">
         <button onClick={(e) => selectionHandler({ ...e }, "Text")}>
           <Image
             src={TextIcon}
@@ -37,6 +37,7 @@ export default function SideSection({
             className={`p-1 rounded-3xl ${isSelected("Text")}`}
           />
         </button>
+        <div className="">Save</div>
       </div>
     </div>
   );
