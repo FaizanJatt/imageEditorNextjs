@@ -2,7 +2,7 @@
 import SideSection from "../components/SideSection";
 import HeaderSection from "../components/HeaderSection";
 import { useEffect, useRef, useState } from "react";
-type ImageActionType = "Text" | "Move" | null;
+type ImageActionType = "Text" | "Move" | "Download" | null;
 type TextBoxArrType = Array<{
   x: number;
   y: number;
@@ -20,15 +20,15 @@ type TextBoxArrType = Array<{
 const fontSizeArr = [8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26];
 export default function Authorized() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
   const [img, setImg] = useState<Blob>();
   const [currentAction, setCurrentAction] = useState<ImageActionType>(null);
-  const [preview, setPreview] = useState<string>();
+  const [preview, setPreview] = useState<string>("");
   const [TextBoxArr, setTextBoxArr] = useState<TextBoxArrType>([]);
   const [currentMoveTarget, setCurrentMoveTarget] = useState<string>("");
+
   useEffect(() => {
     if (!img) {
-      setPreview(undefined);
+      setPreview("");
       return;
     }
 
@@ -41,9 +41,9 @@ export default function Authorized() {
 
   useEffect(() => {
     applyFx();
-  }, [img, preview]);
+  }, [img, preview, TextBoxArr]);
 
-  const applyFx = () => {
+  const applyFx = (download?: boolean) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     const image = new Image();
@@ -51,13 +51,28 @@ export default function Authorized() {
 
     image.onload = () => {
       if (canvas && context) {
+        console.log("repainting");
         canvas.width = image.width;
         canvas.height = image.height;
         context.save();
 
-        // context.translate(translateX, translateY);
-        // context.scale(zoom, zoom);
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        if (download) {
+          setCurrentAction("Download");
+          TextBoxArr.map((each) => {
+            const fontSize = `${each.fontSize}px serif`;
+            const bold = `${each.bold ? " bold" : " "}`;
+            const italic = `${each.italics ? " italic" : " "} `;
+            // const fontString = `${each.fontSize}px ${
+            //   each.bold ? " bold" : ""
+            // } ${each.italics ? "italic" : ""} `;
+            const fontString = `${fontSize} ${bold} ${italic}`;
+            context.font = fontString;
+            each.text &&
+              context.fillText(each.text, each.x / 2 - 42, each.y - 14);
+          });
+          saveImage(canvas);
+        }
 
         context.restore();
       }
@@ -74,6 +89,32 @@ export default function Authorized() {
       return arr;
     });
   }
+  const saveImage = (canvas: HTMLCanvasElement) => {
+    // const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const editedFile = new File([blob], "editedImage", {
+            type: blob.type,
+          });
+
+          const objectUrl = URL.createObjectURL(blob);
+          const linkElement = document.createElement("a");
+          linkElement.download = `${"editedImage"}`;
+          linkElement.href = objectUrl;
+          setTextBoxArr([]);
+
+          setPreview(objectUrl);
+          linkElement.click();
+          URL.revokeObjectURL(objectUrl);
+
+          // setImg(editedFile);
+
+          // onSaveImage(editedFile);
+        }
+      });
+    }
+  };
 
   const imageOnClickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     if (preview && currentAction === "Text") {
@@ -111,6 +152,7 @@ export default function Authorized() {
       <SideSection
         currentAction={currentAction}
         setCurrentAction={setCurrentAction}
+        download={applyFx}
       />
       <div className="flex-1">
         <HeaderSection setImg={setImg} />
@@ -166,6 +208,7 @@ export default function Authorized() {
                   key: string,
                   val?: boolean | number
                 ) => {
+                  console.log("RUnNING CHANGE FORMATTING HANDLER", key, name);
                   const index = TextBoxArr.findIndex((i) => i.key === key);
                   if (index === -1) return;
 
@@ -199,17 +242,14 @@ export default function Authorized() {
                     }}
                   >
                     <div
-                      onFocus={() =>
-                        ChangeFormattingHandler("isFocused", textBox.key, true)
-                      }
-                      onBlur={(e) => {
-                        setTimeout(() => {
+                      onFocus={() => {
+                        if (currentAction !== "Download") {
                           ChangeFormattingHandler(
                             "isFocused",
                             textBox.key,
-                            false
+                            true
                           );
-                        }, 1500);
+                        }
                       }}
                       style={{
                         cursor: "move",
@@ -223,14 +263,13 @@ export default function Authorized() {
                           height: textBox.height,
                           fontSize: textBox.fontSize,
                         }}
-                        className={`pl-2 bg-inherit  text-black  border-black ${
+                        className={`  pl-2 bg-inherit font-serif  text-black  border-black ${
                           textBox.bold && "font-bold"
                         } ${textBox.italics && "italic"} ${
                           textBox.underline && "underline"
                         } ${
                           currentAction === "Move" && "border-solid border-2"
                         }`}
-                        value={textBox.text}
                         onClick={() => setCurrentMoveTargetHandler(textBox.key)}
                         onChange={(e) => onChange(textBox.key, e.target.value)}
                       />

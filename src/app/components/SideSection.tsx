@@ -2,15 +2,17 @@ import Image from "next/image";
 import TextIcon from "../../assets/Text.svg";
 import { Dispatch, SetStateAction } from "react";
 
-type ImageActionType = "Text" | "Move" | null;
+type ImageActionType = "Text" | "Move" | "Download" | null;
 
 interface SideSectionProps {
   setCurrentAction: Dispatch<SetStateAction<ImageActionType>>;
   currentAction: ImageActionType;
+  download: (download?: boolean) => void;
 }
 export default function SideSection({
   setCurrentAction,
   currentAction,
+  download,
 }: SideSectionProps) {
   const selectionHandler = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -45,10 +47,7 @@ export default function SideSection({
         >
           Drag Box
         </div>
-        <div
-          onClick={() => alert("not yet implemented")}
-          className="font-mono text-xs"
-        >
+        <div onClick={() => download(true)} className="font-mono text-xs">
           Save
         </div>
       </div>
