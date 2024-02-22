@@ -135,6 +135,13 @@ export default function Authorized() {
         },
       ]);
       setCurrentAction("Move");
+    } else if (
+      preview &&
+      currentAction === "Move" &&
+      currentMoveTarget !== ""
+    ) {
+      setCurrentMoveTarget("");
+      setCurrentAction(null);
     }
   };
 
@@ -155,7 +162,11 @@ export default function Authorized() {
         download={applyFx}
       />
       <div className="flex-1">
-        <HeaderSection setImg={setImg} />
+        <HeaderSection
+          img={img}
+          setTextBoxArr={setTextBoxArr}
+          setImg={setImg}
+        />
         <div className="text-[#C6A15A]  flex-1 bg-gradient-to-br from-50% from-[#C6A15A] via-30%  to-[#161616] via-[#252525]    h-full">
           {preview && (
             <div
@@ -176,17 +187,6 @@ export default function Authorized() {
                 }
               }}
             >
-              {/* <Image
-                src={preview}
-                alt="user Uploaded Img"
-                width={50}
-                height={50}
-                style={{
-                  cursor: currentAction || "auto",
-                  width: "auto",
-                  height: "auto",
-                }}
-              /> */}
               <canvas
                 className=" "
                 ref={canvasRef}
@@ -223,21 +223,22 @@ export default function Authorized() {
                 };
                 return (
                   <div
-                    className={`p-5 z-30 bg-transparent    absolute  `}
+                    className={`p-5  z-30 bg-transparent    absolute  `}
                     key={textBox.key}
                     style={{
                       left: textBox.x / 2,
                       top: textBox.y,
                     }}
                     onClick={(e) => {
-                      if (
-                        preview &&
-                        currentAction === "Move" &&
-                        currentMoveTarget !== ""
-                      ) {
-                        setCurrentMoveTarget("");
-                        setCurrentAction(null);
-                      }
+                      // console.log(e.clientX, e.clientY);
+                      // if (
+                      //   preview &&
+                      //   currentAction === "Move" &&
+                      //   currentMoveTarget !== ""
+                      // ) {
+                      //   setCurrentMoveTarget("");
+                      //   setCurrentAction(null);
+                      // }
                       e.stopPropagation();
                     }}
                   >

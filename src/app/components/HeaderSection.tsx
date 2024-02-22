@@ -7,16 +7,34 @@ import {
 } from "react";
 import BgDesign from "../../assets/HourglassDesign.svg";
 import Image from "next/image";
+type TextBoxArrType = Array<{
+  x: number;
+  y: number;
+  text?: string;
+  key: string;
+  width: number;
+  height: number;
+  bold: boolean;
+  italics: boolean;
+  underline: boolean;
+  fontSize: number;
+  isFocused: boolean;
+}>;
+
 interface HeaderSectionsProps {
   setImg: any;
+  img: Blob | undefined;
+  setTextBoxArr: Dispatch<SetStateAction<TextBoxArrType>>;
 }
 export default function HeaderSection(props: HeaderSectionsProps) {
   const setImgHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) {
+    if (!e.target.files) {
       props.setImg(undefined);
       return;
     }
-    console.log(e.target.files[0]);
+    if (props.img) {
+      props.setTextBoxArr([]);
+    }
     props.setImg(e.target.files[0]);
   };
   const fileInputRef = useRef<HTMLInputElement>(null);
