@@ -16,7 +16,7 @@ type TextBoxArrType = Array<{
   height: number;
   bold: boolean;
   italics: boolean;
-  underline: boolean;
+  color: string;
   fontSize: number;
   isFocused: boolean;
 }>;
@@ -28,6 +28,7 @@ interface HeaderSectionsProps {
 }
 export default function HeaderSection(props: HeaderSectionsProps) {
   const setImgHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log("IMG HANDLER 1");
     if (!e.target.files) {
       props.setImg(undefined);
       return;
@@ -55,7 +56,7 @@ export default function HeaderSection(props: HeaderSectionsProps) {
           onChange={setImgHandler}
           className=" -z-30 absolute hidden"
         />
-        <button onClick={() => console.log(fileInputRef.current?.click())}>
+        <button onClick={() => fileInputRef.current?.click()}>
           <p>Upload Image</p>
         </button>
       </div>

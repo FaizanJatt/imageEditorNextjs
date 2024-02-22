@@ -12,7 +12,7 @@ type TextBoxArrType = Array<{
   height: number;
   bold: boolean;
   italics: boolean;
-  underline: boolean;
+  color: string;
   fontSize: number;
   isFocused: boolean;
 }>;
@@ -57,6 +57,14 @@ export default function Authorized() {
         context.save();
 
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // commented out this code for future use a
+        // context.strokeStyle = "gold";
+        // context.lineWidth = 15;
+
+        // context.strokeRect(0, 0, image.width, image.height);
+
+        // context.stroke();
         if (download) {
           setCurrentAction("Download");
           TextBoxArr.map((each) => {
@@ -68,6 +76,7 @@ export default function Authorized() {
             // } ${each.italics ? "italic" : ""} `;
             const fontString = `${fontSize} ${bold} ${italic}`;
             context.font = fontString;
+            context.fillStyle = each.color || "black";
             each.text &&
               context.fillText(each.text, each.x / 2 - 42, each.y - 14);
           });
@@ -128,7 +137,7 @@ export default function Authorized() {
           width: 250,
           bold: false,
           italics: false,
-          underline: false,
+          color: "black",
           fontSize: 14,
           isFocused: false,
           text: "",
@@ -199,16 +208,10 @@ export default function Authorized() {
 
               {TextBoxArr.map((textBox) => {
                 const ChangeFormattingHandler = (
-                  name:
-                    | "bold"
-                    | "italics"
-                    | "underline"
-                    | "isFocused"
-                    | "fontSize",
+                  name: "bold" | "italics" | "isFocused" | "fontSize" | "color",
                   key: string,
-                  val?: boolean | number
+                  val?: boolean | number | string
                 ) => {
-                  console.log("RUnNING CHANGE FORMATTING HANDLER", key, name);
                   const index = TextBoxArr.findIndex((i) => i.key === key);
                   if (index === -1) return;
 
@@ -229,18 +232,9 @@ export default function Authorized() {
                       left: textBox.x / 2,
                       top: textBox.y,
                     }}
-                    onClick={(e) => {
-                      // console.log(e.clientX, e.clientY);
-                      // if (
-                      //   preview &&
-                      //   currentAction === "Move" &&
-                      //   currentMoveTarget !== ""
-                      // ) {
-                      //   setCurrentMoveTarget("");
-                      //   setCurrentAction(null);
-                      // }
-                      e.stopPropagation();
-                    }}
+                    // onClick={(e) => {
+                    //   // e.stopPropagation();
+                    // }}
                   >
                     <div
                       onFocus={() => {
@@ -263,12 +257,11 @@ export default function Authorized() {
                           width: textBox.width,
                           height: textBox.height,
                           fontSize: textBox.fontSize,
+                          color: textBox.color,
                         }}
                         className={`  pl-2 bg-inherit font-serif  text-black  border-black ${
                           textBox.bold && "font-bold"
-                        } ${textBox.italics && "italic"} ${
-                          textBox.underline && "underline"
-                        } ${
+                        } ${textBox.italics && "italic"}  ${
                           currentAction === "Move" && "border-solid border-2"
                         }`}
                         onClick={() => setCurrentMoveTargetHandler(textBox.key)}
@@ -294,15 +287,6 @@ export default function Authorized() {
                           >
                             I
                           </button>
-                          <button
-                            className="p-2 underline"
-                            onClick={(e) =>
-                              ChangeFormattingHandler("underline", textBox.key)
-                            }
-                            data-name="underline"
-                          >
-                            U
-                          </button>
 
                           <select
                             value={textBox.fontSize}
@@ -326,6 +310,16 @@ export default function Authorized() {
                               );
                             })}
                           </select>
+                          <input
+                            onChange={(e) =>
+                              ChangeFormattingHandler(
+                                "color",
+                                textBox.key,
+                                e.target.value
+                              )
+                            }
+                            type="color"
+                          />
                         </div>
                       )}
                     </div>

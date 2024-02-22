@@ -47,6 +47,7 @@ export default function SideSection({
         >
           Drag Box
         </div>
+        <div className="font-mono text-xs">Border</div>
         <div onClick={() => download(true)} className="font-mono text-xs">
           Save
         </div>
