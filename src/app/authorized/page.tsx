@@ -40,6 +40,8 @@ export default function Authorized() {
   }, [img]);
 
   useEffect(() => {
+    // whenever a change occurs in the image or
+    // textbox or the displayed image occur a rerender of the canvas
     applyFx();
   }, [img, preview, TextBoxArr]);
 
@@ -160,7 +162,7 @@ export default function Authorized() {
 
   return (
     <main
-      className="flex min-h-screen flex-row  "
+      className="flex min-h-screen flex-row   font-mono"
       style={{ cursor: currentAction || "auto" }}
     >
       <SideSection
