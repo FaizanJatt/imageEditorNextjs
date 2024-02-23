@@ -28,7 +28,6 @@ interface HeaderSectionsProps {
 }
 export default function HeaderSection(props: HeaderSectionsProps) {
   const setImgHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("IMG HANDLER 1");
     if (!e.target.files) {
       props.setImg(undefined);
       return;
@@ -41,13 +40,14 @@ export default function HeaderSection(props: HeaderSectionsProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="flex h-20 flex-1  justify-between items-center pl-6 bg-[#151010] text-[#C6A15A]">
-      <div className="flex-row flex gap-3">
-        <div> Image Editor</div>
-        <div className="h-7 w-7 rotate-12">
-          <Image src={BgDesign} alt="Hourglass Vector" className="" />
-        </div>
+    <div className="flex h-20  w-full justify-between items-center pl-6  shadow-sm shadow-blue-100     bg-white text-blue-500 font-bold">
+      <div className="flex-row flex gap-3 justify-center items-center ">
+        <div className="text-[#7892bd]"> Image Editor</div>
+        {/* <div className="h-14 w-7 rotate-45 "> */}
+        <Image src={BgDesign} alt="Hourglass Vector" className="" />
+        {/* </div> */}
       </div>
+
       <div className="pr-20">
         <input
           ref={fileInputRef}
@@ -56,8 +56,9 @@ export default function HeaderSection(props: HeaderSectionsProps) {
           onChange={setImgHandler}
           className=" -z-30 absolute hidden"
         />
+
         <button onClick={() => fileInputRef.current?.click()}>
-          <p>Upload Image</p>
+          <p className="text-[#6684b4]">Upload Image</p>
         </button>
       </div>
     </div>

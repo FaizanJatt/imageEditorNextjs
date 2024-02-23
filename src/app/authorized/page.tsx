@@ -16,8 +16,10 @@ type TextBoxArrType = Array<{
   fontSize: number;
   isFocused: boolean;
 }>;
-
-const fontSizeArr = [8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26];
+import hourglass from "../../assets/HourglassDesign.svg";
+const fontSizeArr = [
+  8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 27, 28, 30,
+];
 export default function Authorized() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [img, setImg] = useState<Blob>();
@@ -45,6 +47,17 @@ export default function Authorized() {
     applyFx();
   }, [img, preview, TextBoxArr]);
 
+  function createFontFormatString(
+    font: string,
+    bold: boolean,
+    italic: boolean
+  ) {
+    let format = "";
+    if (bold) format += " bold";
+    if (italic) format += " italic";
+    return format + " " + font;
+  }
+
   const applyFx = (download?: boolean) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
@@ -53,7 +66,6 @@ export default function Authorized() {
 
     image.onload = () => {
       if (canvas && context) {
-        console.log("repainting");
         canvas.width = image.width;
         canvas.height = image.height;
         context.save();
@@ -71,11 +83,14 @@ export default function Authorized() {
           setCurrentAction("Download");
           TextBoxArr.map((each) => {
             const fontSize = `${each.fontSize}px serif`;
-            const bold = `${each.bold ? " bold" : " "}`;
-            const italic = `${each.italics ? " italic" : " "} `;
-
-            const fontString = `${fontSize} ${bold} ${italic}`;
-            context.font = fontString;
+            // const bold = `${each.bold ? "bold" : ""}`;
+            // const italic = `${each.italics ? "italic" : ""} `;
+            // const fontString = `${fontSize} ${bold} ${italic}`;
+            context.font = createFontFormatString(
+              fontSize,
+              each.bold,
+              each.italics
+            );
             context.fillStyle = each.color || "black";
             each.text &&
               context.fillText(each.text, each.x / 2 - 42, each.y - 14);
@@ -113,11 +128,11 @@ export default function Authorized() {
           linkElement.href = objectUrl;
           setTextBoxArr([]);
 
-          setPreview(objectUrl);
+          // setPreview(objectUrl);
           linkElement.click();
           URL.revokeObjectURL(objectUrl);
 
-          // setImg(editedFile);
+          setImg(editedFile);
 
           // onSaveImage(editedFile);
         }
@@ -161,22 +176,22 @@ export default function Authorized() {
   };
 
   return (
-    <main
-      className="flex min-h-screen flex-row   font-mono"
+    <div
+      className="flex     min-h-screen flex-col   font-mono"
       style={{ cursor: currentAction || "auto" }}
     >
-      <SideSection
-        currentAction={currentAction}
-        setCurrentAction={setCurrentAction}
-        download={applyFx}
-      />
-      <div className="flex-1">
-        <HeaderSection
-          img={img}
-          setTextBoxArr={setTextBoxArr}
-          setImg={setImg}
+      {/* <div className="w-20 min-h-full"> */}
+
+      <HeaderSection img={img} setTextBoxArr={setTextBoxArr} setImg={setImg} />
+
+      {/* </div> */}
+      <div className=" flex-row flex flex-1">
+        <SideSection
+          currentAction={currentAction}
+          setCurrentAction={setCurrentAction}
+          download={applyFx}
         />
-        <div className="text-[#C6A15A]  flex-1 bg-gradient-to-br from-50% from-[#C6A15A] via-30%  to-[#161616] via-[#252525]    h-full">
+        <div className=" flex-1 min-h-screen bg-gradient-to-br from-50% from-[#c9d6e44f] via-30%  to-[#7892bd] via-[#c9d6e44f]    h-full">
           {preview && (
             <div
               onClick={imageOnClickHandler}
@@ -268,7 +283,7 @@ export default function Authorized() {
                         onChange={(e) => onChange(textBox.key, e.target.value)}
                       />
                       {textBox.isFocused && (
-                        <div className="flex flex-1 h-8 justify-center items-center gap-5 bg-[#141414]">
+                        <div className="flex text-[#e8dfdf] flex-1 h-8 justify-center items-center gap-5 bg-[#141414]">
                           <button
                             onClick={(e) =>
                               ChangeFormattingHandler("bold", textBox.key)
@@ -290,7 +305,7 @@ export default function Authorized() {
 
                           <select
                             value={textBox.fontSize}
-                            className="bg-inherit"
+                            className="bg-[#141414]"
                             onChange={(e) =>
                               ChangeFormattingHandler(
                                 "fontSize",
@@ -319,6 +334,7 @@ export default function Authorized() {
                               )
                             }
                             type="color"
+                            className="bg-inherit"
                           />
                         </div>
                       )}
@@ -330,6 +346,6 @@ export default function Authorized() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -134,7 +134,7 @@ export default function Home() {
             <div className="flex flex-col">
               <div className="flex flex-col gap-3">
                 <div>
-                  <label className="font-semibold text-sm font-mono text-black">
+                  <label className="font-semibold text-sm font-mono text-[#6684b4]">
                     Email
                   </label>
                 </div>
@@ -151,7 +151,7 @@ export default function Home() {
               </div>
               <div>
                 <div className="mb-2 font-mono">
-                  <label className="font-semibold font-mono text-sm text-black">
+                  <label className="font-semibold font-mono text-sm text-[#6684b4]">
                     Password
                   </label>
                 </div>
@@ -212,15 +212,15 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="font-mono mt-5 w-80 gap-2 justify-center items-center flex-row flex">
+              <div className=" font-mono mt-5 w-80 gap-2 justify-center items-center flex-row flex">
                 <button
                   onClick={registerHandler}
-                  className={`text-xs w-1/2 h-9  rounded-3xl  font-medium ${isRegisterActionState()}`}
+                  className={`text-xs w-1/2 h-9  rounded-3xl  font-semibold ${isRegisterActionState()}`}
                 >
                   Register
                 </button>
                 <button
-                  className={` text-xs w-1/2 h-9 rounded-3xl font-medium ${isLoginActionState()}`}
+                  className={` text-xs w-1/2 h-9 rounded-3xl font-semibold ${isLoginActionState()}`}
                   onClick={loginHandler}
                 >
                   Login
