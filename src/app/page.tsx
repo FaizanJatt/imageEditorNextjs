@@ -3,11 +3,15 @@
 import Image from "next/image";
 import slideImg from "../assets/slide.jpg";
 import eyeIcon from "../assets/EyeIcon.svg";
+import { usePathname } from "next/navigation";
 
 import { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 export default function Home() {
+  const path = usePathname();
+  console.log(path);
   const router = useRouter();
+
   const [passwordState, setPasswordState] = useState<"password" | "text">(
     "password"
   );
@@ -89,7 +93,8 @@ export default function Home() {
     if (actionState === "register") {
       setActionState("login");
     } else if (isValidEmail() && passwordText.length > 1) {
-      router.push("http://localhost:3000/authorized");
+      router.push("/authorized");
+      console.log("sending to /authorized");
       setFormErrors((prev) => {
         return { ...prev, email: false, password: false };
       });
