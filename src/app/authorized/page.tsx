@@ -71,9 +71,7 @@ export default function Authorized() {
             const fontSize = `${each.fontSize}px serif`;
             const bold = `${each.bold ? " bold" : " "}`;
             const italic = `${each.italics ? " italic" : " "} `;
-            // const fontString = `${each.fontSize}px ${
-            //   each.bold ? " bold" : ""
-            // } ${each.italics ? "italic" : ""} `;
+
             const fontString = `${fontSize} ${bold} ${italic}`;
             context.font = fontString;
             context.fillStyle = each.color || "black";

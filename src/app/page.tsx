@@ -89,7 +89,6 @@ export default function Home() {
     if (actionState === "register") {
       setActionState("login");
     } else if (isValidEmail() && passwordText.length > 1) {
-      console.log("go to authorized section");
       router.push("http://localhost:3000/authorized");
       setFormErrors((prev) => {
         return { ...prev, email: false, password: false };
